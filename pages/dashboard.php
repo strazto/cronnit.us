@@ -23,6 +23,23 @@ case 'calendar':
   $this->vars['posts'] = $indexedPosts;
 
   break;
+case 'body':
+  $this->vars['view'] = 'posts-body.html';
+
+  # I can't figure out any better way to do this from the RedBeanPHP docs, though
+  # I am sure there is one.
+  $distinct_urls = R::getAll("SELECT DISTINCT url FROM posts WHERE author-id = $account->id ORDER BY `when` DESC");
+  
+  $indexedPosts = [];
+  foreach($distinct_urls as $url) {
+    $posts_with_url = $posts->withCondition(' url = ? ', [$url])->ownPostList;
+
+    $indexedPosts[$url] = $posts_with_url;
+  }
+
+  $this->vars['posts'] = $indexedPosts;
+
+  break;
 case 'list':
 default:
   $this->vars['view'] = 'posts-list.html';
