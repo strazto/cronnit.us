@@ -1,9 +1,9 @@
 <div class="row">
 {% for url, instances in posts %}
   {% set instance_id = instances[0].id %}
-  <div id="instance-{{ instance_id }}" class="col-md-3">
+  <div id="instance-{{ instance_id }}" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
     <div id="thumb-{{ instance_id }}" class="img-responsive">
-      <img src="https://placehold.it/250x250" alt="Thumbnail for {{ url }}">
+      <img src="https://placehold.it/128" alt="Thumbnail for {{ url }}">
     </div>
     {% for post in instances %}
       <div class="row" id="post-{{ post.id }}">
@@ -17,27 +17,29 @@
     {% set add_when = add_id ~ "-when" %}
     {% set add_title = add_id ~ "-title" %}
     {% set add_submit = add_id ~ "-submit" %}
-      <div class="row" id="{{ add_id }}">
-        <form>
-          <div class="form-group col-xs-3">
+    <form>  
+       <div class="row" id="{{ add_id }}">
+        
+          <div class="col-xs-3">
             <label class="sr-only" for="{{ add_subreddit }}" >Subreddit</label>
-            <input class="form-control" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
+            <input class="form-control input-sm" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
           </div>
-          <div class="form-group col-xs-3"> 
+          <div class="col-xs-3"> 
             <label class="sr-only" for="{{ add_title }}" >Title</label>
-            <input class="form-control" name="title" type="text" id="{{ add_title }}" placeholder="Title" >
+            <input class="form-control input-sm" name="title" type="text" id="{{ add_title }}" placeholder="Title" >
           </div>
-          <div class="form-group col-xs-3"> 
+          <div class="col-xs-3"> 
             <label class="sr-only" for="{{ add_when }}" >When To Submit</label>
-            <input class="form-control" name="whendttm" type="datetime-local" id="{{ add_when }}" placeholder="dd-mm-yyyy">
+            <input class="form-control input-sm" name="whendttm" type="datetime-local" id="{{ add_when }}" placeholder="dd-mm-yyyy">
           </div>
           <div class="col-xs-3">
-            <button type="submit" class="btn btn-success btn-block" id="{{ add_submit }}">
+            <button type="submit" class="btn btn-success btn-block btn-sm" id="{{ add_submit }}">+</button>
             <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+            <input type="hidden" name="body" value="{{ url }}">
           </div>
-          <input type="hidden" name="body" value="{{ url }}">
-        </form>
+           
       </div>
+    </form>
   </div>
 {% endfor %}
 </div>
