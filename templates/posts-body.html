@@ -1,45 +1,143 @@
-<div class="row">
+<div class="container-fluid">
+<div class="card-deck">
 {% for url, instances in posts %}
-  {% set instance_id = instances[0].id %}
-  <div id="instance-{{ instance_id }}" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-    <div id="thumb-{{ instance_id }}" class="img-responsive">
-      <img src="https://placehold.it/128" alt="Thumbnail for {{ url }}">
+  {% set instance_id = instances|first %}
+  {% set instance_id = instance_id.id %}
+  <div id="instance-{{ instance_id }}" class="card mb-3">
+    <div class="row no-gutters">
+    <div id="thumb-{{ instance_id }}" class="col-md-3">
+      <img src="https://placehold.it/128" alt="Thumbnail for {{ url }}" class="card-img">
     </div>
+    <div class="col-md-9">
+    <div class="card-body">
     {% for post in instances %}
-      <div class="row" id="post-{{ post.id }}">
-        <div class="col-xs-3">{{ post.subreddit }}</div>
-        <div class="col-xs-3">{{ post.title }}</div>
-        <div class="col-xs-3">{{ post.when | date("d/m/Y g:ia") }}</div>
+      <div class="row no-gutters" id="post-{{ post.id }}">
+        <div name="subreddit" class="col-3 card-text">{{ post.subreddit }}</div>
+        <div name="title" class="col-4 card-text">{{ post.title }}</div>
+        <div name="when" class="col-5 card-text">{{ post.when | date("d/m/Y g:ia", timezone) }}</div>
       </div>
     {% endfor %}
     {% set add_id = "add-" ~ instance_id %}
     {% set add_subreddit = add_id ~ "-subreddit" %}
-    {% set add_when = add_id ~ "-when" %}
+
+    {% set add_when_time = add_id ~ "-whentime" %}
+    {% set add_when_date = add_id ~ "-whendate" %}
+    {% set add_when_zone = add_id ~ "-whenzone" %}
+
     {% set add_title = add_id ~ "-title" %}
     {% set add_submit = add_id ~ "-submit" %}
-    <form>  
-       <div class="row" id="{{ add_id }}">
+    <form action="#" onsubmit="return false">  
+       <div class="form-row no-gutters" id="{{ add_id }}">
         
-          <div class="col-xs-3">
+          <div class="col-2">
             <label class="sr-only" for="{{ add_subreddit }}" >Subreddit</label>
-            <input class="form-control input-sm" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
+            <input class="form-control form-control-sm" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
           </div>
-          <div class="col-xs-3"> 
+          <div class="col-3"> 
             <label class="sr-only" for="{{ add_title }}" >Title</label>
-            <input class="form-control input-sm" name="title" type="text" id="{{ add_title }}" placeholder="Title" >
+            <input class="form-control form-control-sm" name="title" type="text" id="{{ add_title }}" placeholder="Title" >
           </div>
-          <div class="col-xs-3"> 
-            <label class="sr-only" for="{{ add_when }}" >When To Submit</label>
-            <input class="form-control input-sm" name="whendttm" type="datetime-local" id="{{ add_when }}" placeholder="dd-mm-yyyy">
+          <div class="col-2"> 
+            <label class="sr-only" for="{{ add_when_time }}" >Time To Submit</label>
+            <input class="form-control form-control-sm" name="whentime" type="time" id="{{ add_when_time }}">
           </div>
-          <div class="col-xs-3">
+          <div class="col-2">
+            <label class="sr-only" for="{{ add_when_date }}" >Date To Submit</label>
+            <input class="form-control form-control-sm" name="whendate" type="date" id="{{ add_when_date }}">
+          </div>
+          <div class="col-2">
+            <label class="sr-only" for="{{ add_when_zone }}" >Timezone</label>
+            <input class="form-control form-control-sm" name="whenzone" type="text" id="{{ add_when_zone }}" value="UTC">
+          </div>
+          <div class="col-1">
             <button type="submit" class="btn btn-success btn-block btn-sm" id="{{ add_submit }}">+</button>
-            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
             <input type="hidden" name="body" value="{{ url }}">
           </div>
            
       </div>
     </form>
+    </div>
+    </div>
+    </div>
   </div>
 {% endfor %}
 </div>
+</div>
+
+<script>
+  $.fn.serializeObject = function(){
+      var o = {};
+      var a = this.serializeArray();
+      $.each(a, function() {
+              if (o[this.name] !== undefined) {
+                          if (!o[this.name].push) {
+                                          o[this.name] = [o[this.name]];
+                                      }
+                          o[this.name].push(this.value || '');
+                      } else {
+                                  o[this.name] = this.value || '';
+                              }
+          });
+      return o;
+  };
+
+window.post = function(url, data) {
+  return fetch(
+    url, {
+      method: "POST", 
+      body: encodeRequestURI(data),
+      headers: {
+        //'Content-Type' : 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+}
+
+postAppend = function() {
+  var values = $(this).serializeObject();
+  console.log(values);
+  
+
+  var payload = values;
+  payload["submit"] = 1;
+  payload["sendreplies"] = 1;
+  
+  console.log(payload);
+
+  window.post(
+    "submit",
+    payload
+  );
+
+  // Append this to the list
+  var p = $(this).prev().clone();
+  
+  p.prependTo($(this));
+
+  p.find("[name='subreddit']").text(payload['subreddit']);
+  p.find("[name='title']").text(payload['title']);
+  p.find("[name='when']").text(payload['whentime'] + payload['whendate']);
+  
+  return false;
+}
+
+encodeRequestURI = function(obj) {
+  var str = "";
+    for (var key in obj) {
+        if (str != "") {
+                str += "&";
+            }
+        str += key + "=" + encodeURIComponent(obj[key]);
+    }
+  return str;
+}
+
+$("form").submit(postAppend);
+
+$(function () {
+  var zone = /(GMT[\+\-]\d+)/.exec(new Date().toString())[1];
+  $('[name="whenzone"]').val(zone);
+});
+
+
+</script>
