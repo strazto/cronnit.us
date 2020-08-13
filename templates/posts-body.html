@@ -1,0 +1,43 @@
+<div class="row">
+{% for url, instances in posts %}
+  {% set instance_id = instances[0].id %}
+  <div id="instance-{{ instance_id }}" class="col-md-3">
+    <div id="thumb-{{ instance_id }}" class="img-responsive">
+      <img src="https://placehold.it/250x250" alt="Thumbnail for {{ url }}">
+    </div>
+    {% for post in instances %}
+      <div class="row" id="post-{{ post.id }}">
+        <div class="col-xs-3">{{ post.subreddit }}</div>
+        <div class="col-xs-3">{{ post.title }}</div>
+        <div class="col-xs-3">{{ post.when | date("d/m/Y g:ia") }}</div>
+      </div>
+    {% endfor %}
+    {% set add_id = "add-" ~ instance_id %}
+    {% set add_subreddit = add_id ~ "-subreddit" %}
+    {% set add_when = add_id ~ "-when" %}
+    {% set add_title = add_id ~ "-title" %}
+    {% set add_submit = add_id ~ "-submit" %}
+      <div class="row" id="{{ add_id }}">
+        <form>
+          <div class="form-group col-xs-3">
+            <label class="sr-only" for="{{ add_subreddit }}" >Subreddit</label>
+            <input class="form-control" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
+          </div>
+          <div class="form-group col-xs-3"> 
+            <label class="sr-only" for="{{ add_title }}" >Title</label>
+            <input class="form-control" name="title" type="text" id="{{ add_title }}" placeholder="Title" >
+          </div>
+          <div class="form-group col-xs-3"> 
+            <label class="sr-only" for="{{ add_when }}" >When To Submit</label>
+            <input class="form-control" name="whendttm" type="datetime-local" id="{{ add_when }}" placeholder="dd-mm-yyyy">
+          </div>
+          <div class="col-xs-3">
+            <button type="submit" class="btn btn-success btn-block" id="{{ add_submit }}">
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+          </div>
+          <input type="hidden" name="body" value="{{ url }}">
+        </form>
+      </div>
+  </div>
+{% endfor %}
+</div>
