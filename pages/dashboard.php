@@ -35,7 +35,6 @@ case 'calendar':
 
   break;
 case 'body':
-  $f = "json_encode";
 
   $this->vars['view'] = 'posts-body.html';
 
@@ -63,7 +62,6 @@ case 'body':
     $indexedPosts[$body] = $posts_with_url;
   }
 
-  error_log("{$f($indexedPosts)}");
 
   $this->vars['posts'] = $indexedPosts;
 
