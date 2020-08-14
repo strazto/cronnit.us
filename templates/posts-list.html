@@ -4,6 +4,7 @@
     <th>Title</th>
     <th>Sub</th>
     <th>When</th>
+    <th>Thumb</th>
   </tr>
 </thead>
 <tbody>
@@ -28,10 +29,11 @@
       {{ (post.when_original ?? post.when) | time_diff }}
     </span>
   </td>
+  <td>{{ post.thumb | raw }}</td>
 </tr>
 {% else %}
 <tr>
-  <td colspan="3">
+  <td colspan="4">
     <div class="text-center text-muted">
       You have no posts
     </div>

@@ -2,6 +2,7 @@
 
 use \RedBeanPHP\R as R;
 
+
 function is_url($uri){
   $out = preg_match(
       '/^(http|https):'.
@@ -12,6 +13,39 @@ function is_url($uri){
 
   return $out;
 }
+
+
+function getThumb($body) : string {
+  $matches = array();
+  $imgur_pattern = '#^http[s]?://i\.imgur\.com/([[:alnum:]]{7})\.(\w+)$#i';
+  
+  $extension_fix_pat = '`(?<=\.)(mp4|gifv)$`'; 
+
+
+  $div_start = "<div style='max-height:256px;'><div style='position:relative; padding-bottom:147.96%;'>";
+  $div_close = "</div></div>"; 
+
+  $out = ''; 
+  if (preg_match($imgur_pattern, $body, $matches)) {
+    $out = $body;
+    
+    // Replace video urls with static .jpg previews
+    $out = preg_replace($extension_fix_pat, 'jpg', $out);
+    $out = "$div_start<img src='$out' style='position:absolute;top:0;left:0;max-height:256px;'>$div_close";
+    return $out;
+  } 
+
+  $redgifs_pat = '`^http[s]?://redgifs\.com/watch/([[:alnum:]-]+)$`i';
+
+  if (preg_match($redgifs_pat, $body, $matches)) {
+    
+    $data_id = $matches[1];
+    $out = "$div_start<iframe src='https://redgifs.com/ifr/$data_id' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;max-height:256px;' allowfullscreen></iframe>$div_close</p>";
+    return $out;
+  }
+
+  return $out;
+} 
 
 
 $account = $this->getAccount();
@@ -69,6 +103,11 @@ case 'body':
 case 'list':
 default:
   $this->vars['view'] = 'posts-list.html';
+
+  foreach ($posts as $i => $post) {
+	  $posts[$i]['thumb'] = getThumb($post['body']);
+
+  }
   $this->vars['posts'] = $posts;
   break;
 }
