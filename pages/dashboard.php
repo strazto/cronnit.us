@@ -79,6 +79,7 @@ case 'body':
 
     if (!is_url($body)) continue;
 
+    $post['thumb'] = getThumb($body);
     $indexedPosts[$body][] = $post;
   }
 
