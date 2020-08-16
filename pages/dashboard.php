@@ -72,30 +72,15 @@ case 'body':
 
   $this->vars['view'] = 'posts-body.html';
 
-  # I can't figure out any better way to do this from the RedBeanPHP docs, though
-  # I am sure there is one.
-  $distinct_urls = R::getAll(
-    "SELECT DISTINCT `body` FROM `post` WHERE account_id = ? ORDER BY `when` DESC",
-    [$account->id]
-  ); 
-  
-
+  $indexedThumbs = [];
   $indexedPosts = [];
-  foreach ($distinct_urls as $url) {
-    $body = $url['body'];
+  foreach ($posts as $post) {
+    $body = $post['body'];
 
     if (!is_url($body)) continue;
-     
-    
-    $posts_with_url = $account->
-      withCondition(' 
-        ( ( deleted IS NULL OR deleted = 0 ) AND `body` = ? ) 
-        ORDER BY `when` DESC 
-      ', [$body])->ownPostList;
 
-    $indexedPosts[$body] = $posts_with_url;
+    $indexedPosts[$body][] = $post;
   }
-
 
   $this->vars['posts'] = $indexedPosts;
 
