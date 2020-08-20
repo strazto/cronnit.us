@@ -69,7 +69,9 @@ $this->vars['view_list'] = [
 # If view is queried from url, tell the session to use that view.
 # If not given, just use the session's previous view
 if(!is_array($_SESSION['view'])) $_SESSION['view'] = [];
-$view = (string)@$_GET['view'];
+$view = @$_GET['view'];
+if (isset($view)) $view = (string) $view;
+
 $_SESSION['view']['dashboard'] = $view ?? $_SESSION['view']['dashboard'] ?? "list";
 
 
