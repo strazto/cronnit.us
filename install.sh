@@ -207,7 +207,7 @@ su cronnit <<EOF
     if ! crontab -l | grep cron.php; then
         (
             crontab -l 2> /dev/null;
-            echo "* * * * * /usr/bin/php /home/cronnit/cron.php >> /home/cronnit/cronnit.log 2>> /home/cronnit/cronnit.log.err";
+            echo "* * * * * /home/cronnit/cron.sh";
             echo "@daily cd /home/cronnit && git pull && composer update";
         ) | crontab -
     fi

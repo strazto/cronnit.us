@@ -1,0 +1,24 @@
+#!/bin/env bash
+
+# Given the cronnit user has been made,
+# Make it so that logging into "vagrant" immediately switches to the cronnit user
+# https://stackoverflow.com/a/45655918/9238801
+su -c "printf 'cd /home/cronnit
+sudo su cronnit' >> .bash_profile" -s /bin/sh vagrant
+
+# A couple of handy aliases, 
+# lout redirects 
+cat >> /home/cronnit/.bash_aliases <<- EOM
+  # "serve" quickly jumps to the correct dir and serves the website
+  function serve {
+    pushd ~/public_html
+    php -S localhost:8080
+    popd
+  }
+  # lout redirects external:8080 <-> localhost:8080 , so that host can easily connect
+  alias lout='socat -d -d TCP4-LISTEN:8080,bind=10.0.2.15,fork TCP4:localhost:8080'
+EOM
+
+# Change the default shell to bash
+chsh --shell /bin/bash cronnit
+

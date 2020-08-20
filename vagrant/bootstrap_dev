@@ -1,0 +1,6 @@
+#!/bin/env bash
+
+# Install php requirements
+
+apt-get -y install php-cli composer
+

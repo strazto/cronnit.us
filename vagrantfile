@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "ubuntu/focal64"
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine.
+  # By connecting to localhost:8080 from the host, we can access the guest's 
+  # webserver.
+
+  config.vm.network :forwarded_port, guest: 8080, host: 8080
+  config.vm.network :forwarded_port, guest: 22, host: 5522
+  
+  # Forward x11 via ssh. 
+  # Handy if you need to share a clipboard, convey viewport info, etc.
+  config.ssh.forward_x11 = true
+
+  # Run the standard install script, without ssl auth
+
+  config.vm.provision "shell",
+    path: "install.sh",
+    env: {"HTTP_ONLY" => "1"}
+  
+  # Install some development dependencies
+  config.vm.provision "shell",
+    path: "vagrant/bootstrap_dev"
+
+  # Setup the dev environment so that logging into vagrant logs us into cronnit
+  # also exposes some shortcuts for serving the site.
+  config.vm.provision "shell",
+    path: "vagrant/bootstrap_login"
+
+
+end

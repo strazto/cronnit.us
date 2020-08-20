@@ -26,19 +26,39 @@
 </div>
 {% endif %}
 
-<p>
-  <a class="btn btn-primary" href="/submit">
-    <i class="fa fa-pen"></i>
-    Add Post
-  </a>
-  <a class="btn btn-secondary" href="/import">
-    <i class="fas fa-file-csv"></i>
-    Import
-  </a>
-  <a class="btn btn-secondary" href="/export">
-    <i class="fas fa-file-csv"></i>
-    Export
-  </a>
+<div class="row">
+  <div class="col-md col-6">
+    <a class="btn btn-primary btn-block" href="/submit">
+      <i class="fa fa-pen"></i>
+      Add Post
+    </a>
+  </div>
+  <div class="col-md col-6">
+    <a class="btn btn-secondary btn-block" href="/import">
+      <i class="fas fa-file-csv"></i>
+      Import
+    </a>
+  </div>
+  <div class="col-md col-6">
+    <a class="btn btn-secondary btn-block" href="/export">
+      <i class="fas fa-file-csv"></i>
+      Export
+    </a>
+  </div>
+  <div class="col-md col-6">
+    <div class="dropdown show">
+      <a class="btn btn-secondary btn-block dropdown-toggle" href="#" role="button" id="viewSelect" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        View
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="viewSelect">
+        {% for item in view_list %}
+        <a class="dropdown-item{{ item.template == view ? ' active' : '' }}" href="/dashboard?view={{ item.id }}">{{ item.desc }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
 </p>
 
 {% include view %}
