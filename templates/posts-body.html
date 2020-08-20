@@ -1,12 +1,13 @@
 <div class="container-fluid">
-<div class="card-deck">
 {% for url, instances in posts %}
-  {% set instance_id = instances|first %}
-  {% set instance_id = instance_id.id %}
-  <div id="instance-{{ instance_id }}" class="card mb-3">
+  {% set first_post = instances|first %} 
+  {% set instance_id = first_post.id %}
+  <div class="row">
+  <div class="col-12">
+  <div id="instance-{{ instance_id }}" class="card mb-3 w-100">
     <div class="row no-gutters">
     <div id="thumb-{{ instance_id }}" class="col-md-3">
-      <img src="https://placehold.it/128" alt="Thumbnail for {{ url }}" class="card-img">
+      {{ first_post.thumb | raw}}
     </div>
     <div class="col-md-9">
     <div class="card-body">
@@ -21,6 +22,7 @@
     </div>
     </div>
     </div>
+  </div>  
   </div>
 {% endfor %}
 </div>
