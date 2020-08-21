@@ -57,6 +57,8 @@ function getThumb($body) : string {
     # $out = "<iframe class='img-thumbnail img-fluid' src='https://redgifs.com/ifr/$data_id?autoplay=0' loading='lazy' frameborder='0' scrolling='no' allowfullscreen></iframe>";
     return $out;
   }
+  # TODO: Youtube:
+  # https://stackoverflow.com/a/43001028/9238801
 
   return $out;
 }
