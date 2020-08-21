@@ -5,6 +5,7 @@ use \RedBeanPHP\R as R;
 
 function is_url($uri) {
   return preg_match(
+
       '/^(http|https):'.
       '\\/\\/[a-z0-9_]+([\\-\\.]{1}[a-z_0-9]+)*\\.[_a-z]{2,5}'.
       '((:[0-9]{1,5})?\\/.*)?$/i',
@@ -91,6 +92,7 @@ case 'calendar':
 case 'body':
 
   $this->vars['view'] = 'posts-body.html';
+
 
   $indexedPosts = [];
   foreach ($posts as $post) {
