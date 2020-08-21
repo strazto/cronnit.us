@@ -1,0 +1,24 @@
+{#
+Include me via the twig {% use %} tag
+#}
+
+{% block gfy %}
+<iframe 
+  class="embed-responsive-item img-thumbnail img-fluid" 
+  loading="lazy" 
+  scrolling="no"
+  src="https://{{ thumb['src'] }}.com/ifr/{{ slug }}?autoplay=0"
+  allowfullscreen>
+</iframe>
+{% endblock gfy %}
+
+{% block imgur %}
+<img 
+  class="img-thumbnail img-fluid" 
+  loading="lazy" 
+  src="https://i.imgur.com/{{ thumb['slug'] }}t.jpg">
+{% endblock imgur %}
+
+{#
+And so on for other providers, eg youtube, etc.
+#}
