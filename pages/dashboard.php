@@ -50,7 +50,6 @@ function getThumb($body) : array {
   $gfypat .= '(-[[:alnum:]-]+)?$#i'; 
   
   if (preg_match($gfypat, $body, $matches)) {
-    $data_id = $matches[2];
     $out['src'] = $matches['src'];
     $out['slug'] = $matches['slug'];
     
