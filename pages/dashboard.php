@@ -43,7 +43,7 @@ function getThumb($body) : array {
   $gfypat  = '#^http[s]?://(?>www\.)?';
   # src
   $gfypat .= '(?<src>redgifs|gfycat)';
-  $gfypat .= '\.com/(?>watch/)';
+  $gfypat .= '\.com/(?>watch/)?';
   # Slug
   $gfypat .= '(?<slug>[[:alnum:]]+)';
   # Tags
