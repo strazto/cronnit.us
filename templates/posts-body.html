@@ -14,7 +14,7 @@
     {% for post in instances %}
       <div class="row no-gutters" id="post-{{ post.id }}">
         <div name="subreddit" class="col-3 card-text">{{ post.subreddit }}</div>
-        <div name="title" class="col-4 card-text">{{ post.title }}</div>
+        <div name="title" class="col-4 card-text"><a href="/edit?id={{ post.id }}">{{ post.title }}</a></div>
         <div name="when" class="col-5 card-text">{{ post.when | date("d/m/Y g:ia", timezone) }}</div>
       </div>
     {% endfor %}
