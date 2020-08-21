@@ -17,21 +17,44 @@ function is_url($uri){
 
 function getThumb($body) : string {
   $matches = array();
-  $out = '';
+  $out = [
+    'src' => 'unknown',
+    'slug' => $body
+  ];
+  
+  # Domain
+  $imgur_pattern  = '#^(http[s]?://i\.imgur\.com/)';
+  # Slug
+  $imgur_pattern .= '(?<slug>[[:alnum:]]{7})';
+  # Ext
+  $imgur_pattern .= '(?<ext>[[:alnum:]])?\.(\w+)$#i';
 
-  $imgur_pattern = '#^(http[s]?://i\.imgur\.com/)([[:alnum:]]{7})([[:alnum:]])?\.(\w+)$#i';
+
   if (preg_match($imgur_pattern, $body, $matches)) {
-    $out = $body;
+    $out['src']  = 'imgur';
+    $out['slug'] = matches['slug'];
     // Convert to 160x160 thumbnail URL - handles both images and gifs.
-    $out = preg_replace($imgur_pattern, '\1\2t.jpg', $out);
-    $out = "<img class='img-thumbnail img-fluid' loading='lazy' src='$out'>";
+    // $out = preg_replace($imgur_pattern, '\1\2t.jpg', $out);
+    // $out = "<img class='img-thumbnail img-fluid' loading='lazy' src='$out'>";
     return $out;
   }
-
-  $redgifs_pat = '#^http[s]?://(www\.)?redgifs\.com/watch/([[:alnum:]]+)(-[[:alnum:]-]+)?$#i';
-  if (preg_match($redgifs_pat, $body, $matches)) {
+  
+  # Prefix
+  $gfypat  = '#^http[s]?://(?>www\.)?';
+  # src
+  $gfypat .= '(?<src>redgifs|gfycat)';
+  $gfypat .= '\.com/(?>watch/)';
+  # Slug
+  $gfypat .= '(?<slug>[[:alnum:]]+)';
+  # Tags
+  $gfypat .= '(-[[:alnum:]-]+)?$#i'; 
+  
+  if (preg_match($gfypat, $body, $matches)) {
     $data_id = $matches[2];
-    $out = "<iframe class='img-thumbnail img-fluid' src='https://redgifs.com/ifr/$data_id?autoplay=0' loading='lazy' frameborder='0' scrolling='no' allowfullscreen></iframe>";
+    $out['src'] = $matches['src'];
+    $out['slug'] = $matches['slug'];
+    
+    # $out = "<iframe class='img-thumbnail img-fluid' src='https://redgifs.com/ifr/$data_id?autoplay=0' loading='lazy' frameborder='0' scrolling='no' allowfullscreen></iframe>";
     return $out;
   }
 
