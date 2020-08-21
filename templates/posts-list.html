@@ -29,7 +29,9 @@
       {{ (post.when_original ?? post.when) | time_diff }}
     </span>
   </td>
-  <td>{{ post.thumb | raw }}</td>
+  <td class="d-flex justify-content-center align-items-center">
+    {{ post.thumb | raw }}
+  </td>
 </tr>
 {% else %}
 <tr>
