@@ -15,7 +15,7 @@ function is_url($uri){
 }
 
 
-function getThumb($body) : string {
+function getThumb($body) : array {
   $matches = array();
   $out = [
     'src' => 'unknown',
@@ -32,7 +32,7 @@ function getThumb($body) : string {
 
   if (preg_match($imgur_pattern, $body, $matches)) {
     $out['src']  = 'imgur';
-    $out['slug'] = matches['slug'];
+    $out['slug'] = $matches['slug'];
     // Convert to 160x160 thumbnail URL - handles both images and gifs.
     // $out = preg_replace($imgur_pattern, '\1\2t.jpg', $out);
     // $out = "<img class='img-thumbnail img-fluid' loading='lazy' src='$out'>";
