@@ -30,7 +30,9 @@
     </span>
   </td>
   <td class="d-flex justify-content-center align-items-center">
-    {{ post.thumb | raw }}
+      {% embed "thumbnail_dispatch.html" with {thumb: post.thumb} only %}
+        {% use "thumbnail.html" %}
+      {% endembed %}
   </td>
 </tr>
 {% else %}

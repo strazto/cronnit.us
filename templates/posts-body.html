@@ -7,7 +7,9 @@
   <div id="instance-{{ instance_id }}" class="card mb-3 w-100">
     <div class="row no-gutters">
     <div id="thumb-{{ instance_id }}" class="col-md-3">
-      {{ first_post.thumb | raw}}
+      {% embed "thumbnail_dispatch.html" with {thumb: first_post.thumb} only %}
+        {% use "thumbnail.html" %}
+      {% endembed %}
     </div>
     <div class="col-md-9">
     <div class="card-body">
