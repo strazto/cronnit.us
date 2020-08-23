@@ -1,0 +1,7 @@
+{% if thumb['src'] in ["gfycat", "redgifs"] %}
+  {{ block('gfy') }}
+{% elseif thumb['src'] == "imgur" %}
+  {{ block('imgur') }}
+{% else %}
+
+{% endif %}

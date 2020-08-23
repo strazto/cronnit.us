@@ -9,7 +9,9 @@
 
     <!-- Thumbnail -->
     <div id="thumb-{{ instance_id }}" class="col-md-2 pr-3 my-auto">
-      {{ first_post.thumb | raw}}
+      {% embed "thumbnail_dispatch.html" with {thumb: first_post.thumb} only %}
+        {% use "thumbnail.html" %}
+      {% endembed %}
     </div>
 
     <!-- Text grid -->
@@ -36,6 +38,7 @@
         {% set add_when_zone = add_id ~ "-whenzone" %}
         {% set add_submit = add_id ~ "-submit" %}
         <div class="form-row" id="{{ add_id }}">
+
           <div class="col-2">
             <label class="sr-only" for="{{ add_subreddit }}" >Subreddit</label>
             <input class="form-control form-control-sm" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >

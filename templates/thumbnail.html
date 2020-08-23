@@ -1,0 +1,39 @@
+{#
+Include me via the twig {% use %} tag.
+Override me in a similar template (blocks only, no content) by {% use %}ing me,
+and overriding whichever blocks you wish to.
+
+Presently, the pattern is as follows:
+
+  {% embed "thumbnail_dispatch.html" with {thumb: post.thumb} only %}
+    {% use "thumbnail.html" %}
+  {% endembed %}
+
+"thumbnail_dispatch.html" provides control logic for which block should be
+used to render the data. 
+
+"thumbnail.html" (or some derivative thereof) informs the presentation of
+these blocks.
+
+#}
+
+{% block gfy %}
+<iframe 
+  class="embed-responsive-item img-thumbnail img-fluid" 
+  loading="lazy" 
+  scrolling="no"
+  src="https://{{ thumb['src'] }}.com/ifr/{{ thumb['slug'] }}?autoplay=0"
+  allowfullscreen>
+</iframe>
+{% endblock gfy %}
+
+{% block imgur %}
+<img 
+  class="img-thumbnail img-fluid" 
+  loading="lazy" 
+  src="https://i.imgur.com/{{ thumb['slug'] }}t.jpg">
+{% endblock imgur %}
+
+{#
+And so on for other providers, eg youtube, etc.
+#}

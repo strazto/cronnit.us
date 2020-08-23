@@ -1,4 +1,5 @@
 
+
 // Found @ https://stackoverflow.com/a/31751351
 $.fn.serializeObject = function(){
   var o = {};
@@ -26,6 +27,7 @@ $.fn.setLocalTimezone = function() {
 
   return this;
 }
+
 // Adapted from: 
 //   https://stackoverflow.com/a/47065313/9238801
 // Post a form
@@ -52,11 +54,9 @@ window.post = function(url, data) {
 postAppend = function() {
   var values = $(this).serializeObject();
 
-
   var payload = values;
   payload["submit"] = 1;
   payload["sendreplies"] = 1;
-
 
   window.post(
     "submit",
@@ -86,5 +86,3 @@ encodeRequestURI = function(obj) {
   }
   return str;
 }
-
-
