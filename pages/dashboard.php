@@ -51,6 +51,10 @@ function getThumb($body) : array {
   }
   # TODO: Youtube:
   # https://stackoverflow.com/a/43001028/9238801
+  
+  if (is_url($body)) {
+    $out['src'] = 'link';
+  }
 
   return $out;
 }
@@ -154,10 +158,11 @@ case 'body':
   foreach ($posts as $post) {
     $body = $post['body'];
 
-    if (!is_url($body)) continue;
+    $hash = hash("md5", $body);
+    #if (!is_url($body)) continue;
 
     $post['thumb'] = getThumb($body);
-    $indexedPosts[$body][] = $post;
+    $indexedPosts[$hash][] = $post;
   }
 
   $this->vars['posts'] = $indexedPosts;
