@@ -4,6 +4,8 @@ use \RedBeanPHP\R as R;
 
 $account = $this->getAccount();
 
+error_log(json_encode($_SERVER, JSON_PRETTY_PRINT));
+
 if (!isset($_POST['submit'])) {
   $this->vars['error'] = $_SESSION['submiterror'];
   unset($_SESSION['submiterror']);
