@@ -1,3 +1,5 @@
+{% for i, posts in pages %}
+<div class="container-fluid" id="page-{{ i }}" {{ (i != pagenum ) ? "style='display: none;'"}}>
 <table class="table">
 <thead>
   <tr>
@@ -46,3 +48,27 @@
 {% endfor %}
 </tbody>
 </table>
+</div>
+{% endfor %}
+<div id="pagination-container" class="d-inline-block justify-content-center align-items-center">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.min.js" integrity="sha512-1zzZ0ynR2KXnFskJ1C2s+7TIEewmkB2y+5o/+ahF7mwNj9n3PnzARpqalvtjSbUETwx6yuxP5AJXZCpnjEJkQw==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css" integrity="sha512-QmxybGIvkSI8+CGxkt5JAcGOKIzHDqBMs/hdemwisj4EeGLMXxCm9h8YgoCwIvndnuN1NdZxT4pdsesLXSaKaA==" crossorigin="anonymous" />
+
+<script>
+$(function() {
+  var container = $("#pagination-container");
+  container.pagination({
+    dataSource: {{ range(1, n_pages)|json_encode }},
+    pageSize: 1,
+    callback: function(page_num, pagination) {
+    	var previous = $("[id^='page-']:visible");
+			previous.attr("style", "display: none;");
+      
+      var next = $("#page-" + page_num);
+      next.attr("style", "display: block");
+    	
+    }
+  });
+});
+</script>
