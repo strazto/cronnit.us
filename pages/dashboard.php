@@ -75,6 +75,14 @@ $this->vars['view_list'] = [
   ]
 ];
 
+# Handle pagination
+$page_size = 50;
+$this->vars['page_size'] = $page_size;
+$pagenum =  (int) (@$_GET['pagenum'] ?? 1);
+$this->vars['pagenum'] = $pagenum;
+
+
+error_log(json_encode($this->vars));
 
 # If view is queried from url, tell the session to use that view.
 # If not given, just use the session's previous view
@@ -121,7 +129,19 @@ case 'body':
     $indexedPosts[$body][] = $post;
   }
 
-  $this->vars['posts'] = $indexedPosts;
+  $pages = [];
+  $i = 0;
+  $current_page = 1;
+  foreach ($indexedPosts as $body => $post) {
+    $pages[$current_page][$body] = $post;
+    $i += 1;
+
+    $i = $i % $page_size;
+    if ($i == 0) $current_page += 1;
+  }
+  
+  $this->vars['n_pages'] = $current_page;
+  $this->vars['pages'] = $pages;
 
   break;
 case 'list':
