@@ -76,7 +76,7 @@ $this->vars['view_list'] = [
 ];
 
 # Handle pagination
-$page_size = 1;
+$page_size = 50;
 $this->vars['page_size'] = $page_size;
 $pagenum =  (int) (@$_GET['pagenum'] ?? 1);
 $this->vars['pagenum'] = $pagenum;
