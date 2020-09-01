@@ -1,78 +1,86 @@
 <div class="container-fluid">
-{% for url, instances in posts %}
-  {% set first_post = instances|first %}
-  {% set instance_id = first_post.id %}
-  <!-- One card per post body -->
-  <div class="row">
-  <div id="instance-{{ instance_id }}" class="card mb-3 p-3 w-100">
-  <div class="row no-gutters">
+{% for i, posts in pages %}
+<div class="container-fluid" id="page-{{ i }}" {{ (i != pagenum ) ? "style='display: none;'"}}>
+  {% for url, instances in posts %}
+    {% set first_post = instances|first %}
+    {% set instance_id = first_post.id %}
+    <!-- One card per post body -->
+    <div class="row">
+    <div id="instance-{{ instance_id }}" class="card mb-3 p-3 w-100">
+    <div class="row no-gutters">
 
-    <!-- Thumbnail -->
-    <div id="thumb-{{ instance_id }}" class="col-md-2 pr-3 my-auto">
-      {% embed "thumbnail_dispatch.html" with {thumb: first_post.thumb} only %}
-        {% use "thumbnail.html" %}
-      {% endembed %}
+      <!-- Thumbnail -->
+      <div id="thumb-{{ instance_id }}" class="col-md-2 pr-3 my-auto">
+        {% embed "thumbnail_dispatch.html" with {thumb: first_post.thumb} only %}
+          {% use "thumbnail.html" %}
+        {% endembed %}
+      </div>
+
+      <!-- Text grid -->
+      <div class="col-md-10">
+
+        <!-- Existing posts -->
+        {% for post in instances %}
+          <div class="row mb-2" id="post-{{ post.id }}">
+            <div name="subreddit" class="col-4 col-md-3 card-text">{{ post.subreddit }}</div>
+            <div name="title" class="col-5 col-md-6 card-text"><a href="/edit?id={{ post.id }}">{{ post.title }}</a></div>
+            <div name="when" class="col-3 card-text">{{ post.when | date("d/m/Y g:ia T", timezone=post.whenzone) }}</div>
+          </div>
+        {% endfor %}
+
+        <hr class="mt-3 mb-3"/>
+
+        <!-- Form to add new post -->
+        <form action="#" onsubmit="return false">
+          {% set add_id = "add-" ~ instance_id %}
+          {% set add_subreddit = add_id ~ "-subreddit" %}
+          {% set add_title = add_id ~ "-title" %}
+          {% set add_when_date = add_id ~ "-whendate" %}
+          {% set add_when_time = add_id ~ "-whentime" %}
+          {% set add_when_zone = add_id ~ "-whenzone" %}
+          {% set add_submit = add_id ~ "-submit" %}
+          <div class="form-row" id="{{ add_id }}">
+            <div class="col-2">
+              <label class="sr-only" for="{{ add_subreddit }}" >Subreddit</label>
+              <input class="form-control form-control-sm" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
+            </div>
+            <div class="col-3">
+              <label class="sr-only" for="{{ add_title }}" >Title</label>
+              <input class="form-control form-control-sm" name="title" type="text" id="{{ add_title }}" placeholder="Title" >
+            </div>
+            <div class="col-2">
+              <label class="sr-only" for="{{ add_when_date }}" >Date To Submit</label>
+              <input class="form-control form-control-sm" name="whendate" type="date" id="{{ add_when_date }}">
+            </div>
+            <div class="col-2">
+              <label class="sr-only" for="{{ add_when_time }}" >Time To Submit</label>
+              <input class="form-control form-control-sm" name="whentime" type="time" id="{{ add_when_time }}">
+            </div>
+            <div class="col-2">
+              <label class="sr-only" for="{{ add_when_zone }}" >Timezone</label>
+              <input class="form-control form-control-sm" name="whenzone" type="text" id="{{ add_when_zone }}" value="UTC">
+            </div>
+            <div class="col-1">
+              <button type="submit" class="btn btn-success btn-block btn-sm" id="{{ add_submit }}" title="Add post with same body">+</button>
+              <input type="hidden" name="body" value="{{ url }}">
+            </div>
+          </div>
+        </form>
+      </div>
+
     </div>
-
-    <!-- Text grid -->
-    <div class="col-md-10">
-
-      <!-- Existing posts -->
-      {% for post in instances %}
-        <div class="row mb-2" id="post-{{ post.id }}">
-          <div name="subreddit" class="col-4 col-md-3 card-text">{{ post.subreddit }}</div>
-          <div name="title" class="col-5 col-md-6 card-text"><a href="/edit?id={{ post.id }}">{{ post.title }}</a></div>
-          <div name="when" class="col-3 card-text">{{ post.when | date("d/m/Y g:ia T", timezone=post.whenzone) }}</div>
-        </div>
-      {% endfor %}
-
-      <hr class="mt-3 mb-3"/>
-
-      <!-- Form to add new post -->
-      <form action="#" onsubmit="return false">
-        {% set add_id = "add-" ~ instance_id %}
-        {% set add_subreddit = add_id ~ "-subreddit" %}
-        {% set add_title = add_id ~ "-title" %}
-        {% set add_when_date = add_id ~ "-whendate" %}
-        {% set add_when_time = add_id ~ "-whentime" %}
-        {% set add_when_zone = add_id ~ "-whenzone" %}
-        {% set add_submit = add_id ~ "-submit" %}
-        <div class="form-row" id="{{ add_id }}">
-          <div class="col-2">
-            <label class="sr-only" for="{{ add_subreddit }}" >Subreddit</label>
-            <input class="form-control form-control-sm" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
-          </div>
-          <div class="col-3">
-            <label class="sr-only" for="{{ add_title }}" >Title</label>
-            <input class="form-control form-control-sm" name="title" type="text" id="{{ add_title }}" placeholder="Title" >
-          </div>
-          <div class="col-2">
-            <label class="sr-only" for="{{ add_when_date }}" >Date To Submit</label>
-            <input class="form-control form-control-sm" name="whendate" type="date" id="{{ add_when_date }}">
-          </div>
-          <div class="col-2">
-            <label class="sr-only" for="{{ add_when_time }}" >Time To Submit</label>
-            <input class="form-control form-control-sm" name="whentime" type="time" id="{{ add_when_time }}">
-          </div>
-          <div class="col-2">
-            <label class="sr-only" for="{{ add_when_zone }}" >Timezone</label>
-            <input class="form-control form-control-sm" name="whenzone" type="text" id="{{ add_when_zone }}" value="UTC">
-          </div>
-          <div class="col-1">
-            <button type="submit" class="btn btn-success btn-block btn-sm" id="{{ add_submit }}" title="Add post with same body">+</button>
-            <input type="hidden" name="body" value="{{ url }}">
-          </div>
-        </div>
-      </form>
     </div>
-
-  </div>
-  </div>
-  </div>
+    </div>
+  {% endfor %}
+</div>
 {% endfor %}
 </div>
 
+<div id="pagination-container" class="d-inline-block justify-content-center align-items-center">
+
 <script src="js/submit.js" type="text/javascript"></script>
+<script src="https://pagination.js.org/dist/2.1.5/pagination.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="https://pagination.js.org/dist/2.1.5/pagination.css">
 <script>
 
 $("form").submit(postAppend);
@@ -81,5 +89,20 @@ $(function () {
   $('[name="whenzone"]').setLocalTimezone();
 });
 
+$(function() {
+  var container = $("#pagination-container");
+  container.pagination({
+    dataSource: {{ range(1, n_pages)|json_encode }},
+    pageSize: 1,
+    callback: function(page_num, pagination) {
+    	var previous = $("[id^='page-']:visible");
+			previous.attr("style", "display: none;");
+      
+      var next = $("#page-" + page_num);
+      next.attr("style", "display: block");
+    	
+    }
+  });
+});
 
 </script>
