@@ -76,13 +76,11 @@ $this->vars['view_list'] = [
 ];
 
 # Handle pagination
-$page_size = 50;
+$page_size = 1;
 $this->vars['page_size'] = $page_size;
 $pagenum =  (int) (@$_GET['pagenum'] ?? 1);
 $this->vars['pagenum'] = $pagenum;
 
-
-error_log(json_encode($this->vars));
 
 # If view is queried from url, tell the session to use that view.
 # If not given, just use the session's previous view
@@ -128,12 +126,13 @@ case 'body':
     $post['thumb'] = getThumb($body);
     $indexedPosts[$body][] = $post;
   }
-
+  
+  // Break these up into pages
   $pages = [];
   $i = 0;
   $current_page = 1;
-  foreach ($indexedPosts as $body => $post) {
-    $pages[$current_page][$body] = $post;
+  foreach ($indexedPosts as $body => $instance) {
+    $pages[$current_page][$body] = $instance;
     $i += 1;
 
     $i = $i % $page_size;
@@ -148,10 +147,22 @@ case 'list':
 default:
   $this->vars['view'] = 'posts-list.html';
 
-  foreach ($posts as $i => $post) {
-	  $posts[$i]['thumb'] = getThumb($post['body']);
+  // Break posts up into pages
+  $pages = [];
+  $i = 0;
+  $current_page = 1;
 
+  foreach ($posts as $post) {
+	  $post['thumb'] = getThumb($post['body']);
+    
+    $pages[$current_page][$i] = $post;
+    $i += 1;
+
+    $i = $i % $page_size;
+    if ($i == 0) $current_page += 1;
   }
-  $this->vars['posts'] = $posts;
+  
+  $this->vars['n_pages'] = $current_page;
+  $this->vars['pages'] = $pages;
   break;
 }
