@@ -208,10 +208,13 @@ class Cronnit {
     return $date->format("H:i");
   }
 
-  public function checkPost($account, bool $isEdit, array $data) {
+  public function checkPost($account, bool $isEdit, array $data) : array {
+    $out = [];
+
     foreach (['subreddit', 'title', 'whendate', 'whentime'] as $key) {
       if (!@is_string($data[$key]) || @strlen(trim($data[$key])) <= 0) {
-        return "Missing $key";
+        $out['error'] = 1;
+        $out['errors']['missing'][] = $key;
       }
     }
 
@@ -220,8 +223,11 @@ class Cronnit {
     $when = $this->convertTime($data['whendate'], $data['whentime'], $data['whenzone']);
 
     if ($this->countDailyPosts($account, $when) >= $limit + $editBonus) {
-      return "You have exceeded your daily posting limit of $limit posts";
+      $out['error'] = 1;
+      $out['errors']['limit'] = $limit;
     }
+
+    return $out;
   }
 
 
