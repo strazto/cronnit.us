@@ -95,14 +95,25 @@ function getContentView($page, $page_size, $account) {
 }
 
 function getContentViewPageCount($page_size, $account) {
-  return  R::$f->begin()->
-    select("COUNT DISTINCT hash")->from("post")->
-    where(
-      "( 
-        ( deleted IS NULL OR deleted = 0 ) AND 
-        ( account_id = :acc_id ) AND 
-        ( body <> '' ) 
-      ) ")->put($account['id'])->get("cell") / $page_size;
+  # https://stackoverflow.com/questions/14048098/count-distinct-with-conditions
+  $out = R::getCell("
+    SELECT 
+      COUNT(DISTINCT (
+        case when ( 
+          ( deleted IS NULL OR deleted = 0 ) AND 
+          ( account_id = :acc_id ) AND
+          ( body <> '' ) 
+        )
+        then hash end 
+        )  
+      ) as `out` 
+    FROM post;
+",
+  [":acc_id" => $account['id']]
+  );
+  
+  $out = $out / $page_size;
+  return $out;  
 }
 
 function getListView($page, $page_size, $account) {
