@@ -73,6 +73,8 @@ function getContentView($page, $page_size, $account) {
     ]
   );
 
+  if (! $hashes) return [];
+
   $posts = $account->withCondition("
     (
       ( deleted IS NULL OR deleted = 0 ) AND 
