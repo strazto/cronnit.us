@@ -2,15 +2,12 @@
 
 use \RedBeanPHP\R as R;
 
-$ln = "===========================================";
-
-
 # Get the page from the url
 $page = (int) (@$_GET['page'] ?? 1);
 $page = $page > 0 ? $page : 1;
 
 $page_size = (int) (@$_GET['page_size'] ?? 50);
-$page_size = $page_size > 1 ? $page_size : 50;
+$page_size = $page_size >= 1 ? $page_size : 50;
 
 $account = $this->getAccount();
 # https://stackoverflow.com/questions/5921550/limit-offset-by-distinct-column
