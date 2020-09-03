@@ -45,7 +45,7 @@
       Export
     </a>
   </div>
-  <div class="col-md col-6">
+  <div class="col-lg col-6">
     <div class="dropdown show">
       <a class="btn btn-secondary btn-block dropdown-toggle" href="#" role="button" id="viewSelect" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         View
@@ -57,6 +57,34 @@
       </div>
     </div>
   </div>
+</div>
+<div>
+  {% block pagination %}
+  <span> FYI I calculated there's {{ n_pages}}</span>
+  <nav aria-label="Navigate to other pages">
+    <ul class="pagination pagination-lg justify-content-center">
+      {% for i in range(max(page - 6, 1), page) %}
+      {% block page_item %}
+        {% if i == page %}
+        <li class="page-item active" aria-current="page">
+          <span class="page-link">
+            {{ i }}
+            <span class="sr-only">(current)</span>
+          </span>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ i }}&page_size={{ page_size }}">{{ i }}</a>
+        </li>
+        {% endif %}
+      {% endblock page_item %}
+      {% endfor %}
+      {% for i in range(page + 1, min(page + 6, 10000)) %}
+        {{ block("page_item") }}
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endblock pagination %}
 </div>
 
 </p>
