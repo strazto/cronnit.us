@@ -75,6 +75,7 @@ class Cronnit {
 
   public function connect() {
     R::setup($this->config->dbdsn, $this->config->dbuser, $this->config->dbpass);
+    R::usePartialBeans(["post"]);
   }
 
   public function render() {
