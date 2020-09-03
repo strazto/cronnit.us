@@ -81,7 +81,28 @@ function getContentView($page, $page_size, $account) {
     $hashes
   )->ownPostList;
 
-  return $posts;
+  $indexedPosts = [];
+  foreach ($posts as $post) {
+    $body = $post['body'];
+
+    if (!is_url($body)) continue;
+
+    $post['thumb'] = getThumb($body);
+    $indexedPosts[$body][] = $post;
+  }
+
+  return $indexedPosts;
+}
+
+function getContentViewPageCount($page_size, $account) {
+  return  R::$f->begin()->
+    select("COUNT DISTINCT hash")->from("post")->
+    where(
+      "( 
+        ( deleted IS NULL OR deleted = 0 ) AND 
+        ( account_id = :acc_id ) AND 
+        ( body <> '' ) 
+      ) ")->put($account['id'])->get("cell") / $page_size;
 }
 
 function getListView($page, $page_size, $account) {
@@ -95,7 +116,16 @@ function getListView($page, $page_size, $account) {
     ]
   )->ownPostList;
 
+  foreach ($posts as $i => $post) {
+	  $posts[$i]['thumb'] = getThumb($post['body']);
+  }
   return $posts;
+}
+
+function getListViewPageCount($page_size, $account) {
+  return $account->
+    withCondition('( deleted IS NULL OR deleted = 0 )')->
+    countOwnPosts / $page_size;
 }
 
 # Populate view menu, handle view switching
@@ -131,8 +161,12 @@ $_SESSION['view']['dashboard'] = $view ?? $_SESSION['view']['dashboard'] ?? "lis
 $page = (int) (@$_GET['page'] ?? 1);
 $page = $page > 0 ? $page : 1;
 
+$this->vars["page"] = $page;
+
 $page_size = (int) (@$_GET['page_size'] ?? 50);
 $page_size = $page_size >= 1 ? $page_size : 50;
+
+$this->vars['page_size'] = $page_size;
 
 $account = $this->getAccount();
 $this->vars['account'] = $account;
@@ -140,7 +174,6 @@ $this->vars['account'] = $account;
 switch ($_SESSION['view']['dashboard']) {
 case 'calendar':
   $this->vars['view'] = 'posts-calendar.html';
-  
   $posts = getListView($page, $page_size, $account);
 
   $this->vars['time'] = @$_GET['time'];
@@ -159,29 +192,15 @@ case 'calendar':
 case 'body':
   $this->vars['view'] = 'posts-body.html';
   $posts = getContentView($page, $page_size, $account);
+  $this->vars['posts'] = $posts;
 
-  $indexedPosts = [];
-  foreach ($posts as $post) {
-    $body = $post['body'];
-
-    if (!is_url($body)) continue;
-
-    $post['thumb'] = getThumb($body);
-    $indexedPosts[$body][] = $post;
-  }
-
-  $this->vars['posts'] = $indexedPosts;
-
+  $this->vars['n_pages'] = getContentViewPageCount($page_size, $account); 
   break;
 case 'list':
 default:
   $this->vars['view'] = 'posts-list.html';
   $posts = getListView($page, $page_size, $account);
-
-  foreach ($posts as $i => $post) {
-	  $posts[$i]['thumb'] = getThumb($post['body']);
-
-  }
+  $this->vars['n_pages'] = getListViewPageCount($page_size, $account); 
   $this->vars['posts'] = $posts;
   break;
 }
