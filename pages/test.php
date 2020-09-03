@@ -27,32 +27,13 @@ $hashes = R::getCol(
   ]
 );
 
-$bindings = $hashes;
-$bindings[] = $account['id'];
-
-$posts = R::getAll("
-  SELECT * FROM `post` WHERE
+$posts = $account->withCondition("
   (
     ( deleted IS NULL OR deleted = 0 ) AND 
-    ( hash IN (".R::genSlots($hashes).") ) AND
-    ( account_id = ? )
+    ( hash IN (".R::genSlots($hashes).") )
    )  ORDER BY `when` DESC;",
-  $bindings
-);
-#$posts = R::exportAll($posts);
-
-#$posts = $account->withCondition("( HEX(hash) IN ( ".R::genSlots($hashes)." ) )",
-#  $hashes
-#)->ownPostList;
-
-#$posts = R::find("post", "( HEX(hash) IN ( ".R::genSlots($hashes)." ) )",
-#  $hashes
-#);
-# 'SELECT DISTINCT HEX(hash) FROM post  WHERE ( ( deleted IS NULL OR deleted = 0 ) AND ( account_id = 1 ) AND ( body <> '' ) ) ORDER BY `when` DESC LIMIT 2 OFFSET 6;
-
-error_log($ln."3");
-error_log(json_encode($posts), JSON_PRETTY_PRINT);
-
+  $hashes
+)->ownPostList;
 
 
 $this->vars['posts'] = $posts;
@@ -60,6 +41,3 @@ $this->vars['hashes'] = $hashes;
 $this->vars['page_size'] = $page_size;
 $this->vars['page_num']  = $page;
 
-foreach (['posts', 'hashes', 'page_size', 'page_num'] as $key) {
-  error_log(json_encode($this->vars[$key]), JSON_PRETTY_PRINT);
-}
