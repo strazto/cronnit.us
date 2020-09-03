@@ -91,6 +91,7 @@
         </li>
         {% endif %}
       {% endblock page_item %}
+      {% endfor %}
       {% if page != n_pages %} 
       <li class="page-item">
         <a class="page-link" href="?page={{ n_pages }}&page_size={{ page_size }}">
@@ -104,7 +105,6 @@
         </span>
       </li>
       {% endif %}
-      {% endfor %}
     </ul>
   </nav>
   {% endblock pagination %}
