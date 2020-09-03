@@ -63,7 +63,20 @@
   <span> FYI I calculated there's {{ n_pages}}</span>
   <nav aria-label="Navigate to other pages">
     <ul class="pagination pagination-lg justify-content-center">
-      {% for i in range(max(page - 6, 1), page) %}
+      {% if page != 1 %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1&page_size={{ page_size }}">
+          First
+        </a>
+      </li>
+      {% else %}  
+      <li class="page-item disabled">
+        <span class="page-link">
+          First
+        </span>
+      </li>
+      {% endif %}
+      {% for i in range(max(page - 6, 1), min(page + 6, n_pages)) %}
       {% block page_item %}
         {% if i == page %}
         <li class="page-item active" aria-current="page">
@@ -78,9 +91,19 @@
         </li>
         {% endif %}
       {% endblock page_item %}
-      {% endfor %}
-      {% for i in range(page + 1, min(page + 6, 10000)) %}
-        {{ block("page_item") }}
+      {% if page != n_pages %} 
+      <li class="page-item">
+        <a class="page-link" href="?page={{ n_pages }}&page_size={{ page_size }}">
+          Last ( {{ n_pages }} )
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link" >
+          Last ( {{ n_pages }} )
+        </span>
+      </li>
+      {% endif %}
       {% endfor %}
     </ul>
   </nav>
@@ -90,3 +113,7 @@
 </p>
 
 {% include view %}
+
+<div>
+{{ block("pagination") }}
+</div>
