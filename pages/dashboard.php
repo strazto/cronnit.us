@@ -55,6 +55,48 @@ function getThumb($body) : array {
   return $out;
 }
 
+function getContentView($page, $page_size, $account) { 
+  # https://stackoverflow.com/questions/5921550/limit-offset-by-distinct-column
+  $hashes = R::getCol(
+    "SELECT DISTINCT hash FROM post 
+     WHERE ( 
+      ( deleted IS NULL OR deleted = 0 ) AND 
+      ( account_id = :acc_id ) AND
+      ( body <> '' ) ) 
+      ORDER BY `when` DESC 
+      LIMIT :page_size OFFSET :page_off;
+    ",
+    [
+      ":acc_id" => $account['id'],  
+      ":page_size" => $page_size,
+      ":page_off"  => ($page - 1)*$page_size
+    ]
+  );
+
+  $posts = $account->withCondition("
+    (
+      ( deleted IS NULL OR deleted = 0 ) AND 
+      ( hash IN (".R::genSlots($hashes).") )
+     )  ORDER BY `when` DESC;",
+    $hashes
+  )->ownPostList;
+
+  return $posts;
+}
+
+function getListView($page, $page_size, $account) {
+  $posts = $account->withCondition('
+    ( deleted IS NULL OR deleted = 0 ) 
+    ORDER BY `when` DESC 
+    LIMIT :page_size OFFSET :page_off;',
+    [
+      ":page_size" => $page_size,
+      ":page_off"  => ($page - 1)*$page_size
+    ]
+  )->ownPostList;
+
+  return $posts;
+}
 
 # Populate view menu, handle view switching
 $this->vars['view_list'] = [
@@ -85,15 +127,22 @@ if (isset($view)) $view = (string) $view;
 $_SESSION['view']['dashboard'] = $view ?? $_SESSION['view']['dashboard'] ?? "list";
 
 
+# Get the page from the url
+$page = (int) (@$_GET['page'] ?? 1);
+$page = $page > 0 ? $page : 1;
+
+$page_size = (int) (@$_GET['page_size'] ?? 50);
+$page_size = $page_size >= 1 ? $page_size : 50;
 
 $account = $this->getAccount();
 $this->vars['account'] = $account;
-$posts = $account->withCondition(' ( deleted IS NULL OR deleted = 0 ) ORDER BY `when` DESC ')->ownPostList;
-
-
+ 
 switch ($_SESSION['view']['dashboard']) {
 case 'calendar':
   $this->vars['view'] = 'posts-calendar.html';
+  
+  $posts = getListView($page, $page_size, $account);
+
   $this->vars['time'] = @$_GET['time'];
   $indexedPosts = [];
 
@@ -108,8 +157,8 @@ case 'calendar':
 
   break;
 case 'body':
-
   $this->vars['view'] = 'posts-body.html';
+  $posts = getContentView($page, $page_size, $account);
 
   $indexedPosts = [];
   foreach ($posts as $post) {
@@ -127,6 +176,7 @@ case 'body':
 case 'list':
 default:
   $this->vars['view'] = 'posts-list.html';
+  $posts = getListView($page, $page_size, $account);
 
   foreach ($posts as $i => $post) {
 	  $posts[$i]['thumb'] = getThumb($post['body']);
