@@ -96,7 +96,7 @@ function getContentView($page, $page_size, $account) {
   return $indexedPosts;
 }
 
-function getContentViewPageCount($page_size, $account) {
+function getContentViewPageCount($page_size, $account) : int {
   # https://stackoverflow.com/questions/14048098/count-distinct-with-conditions
   $out = R::getCell("
     SELECT 
@@ -113,8 +113,9 @@ function getContentViewPageCount($page_size, $account) {
 ",
   [":acc_id" => $account['id']]
   );
-  
-  $out = $out / $page_size;
+  if ($out <= $page_size) return 1;
+
+  $out = (int) ceil($out / $page_size);
   return $out;  
 }
 
@@ -135,10 +136,15 @@ function getListView($page, $page_size, $account) {
   return $posts;
 }
 
-function getListViewPageCount($page_size, $account) {
-  return $account->
+function getListViewPageCount($page_size, $account) : int {
+  $out = $account->
     withCondition('( deleted IS NULL OR deleted = 0 )')->
-    countOwnPosts / $page_size;
+    countOwnPosts;
+  
+  if ($out <= $page_size) return 1;
+
+  $out = (int) ceil($out / $page_size);
+  return $out;  
 }
 
 # Populate view menu, handle view switching
