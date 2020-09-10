@@ -64,13 +64,18 @@ postAppend = function() {
   );
 
   // Append this to the list
-  var p = $(this).prev().clone();
+  var p = $(this).parent().find("[id|='post']").first();
+  var p_new = p.clone();
 
-  p.prependTo($(this));
+  p_new.prependTo(p.parent());
+  
 
-  p.find("[name='subreddit']").text(payload['subreddit']);
-  p.find("[name='title']").text(payload['title']);
-  p.find("[name='when']").text(payload['whentime'] + payload['whendate']);
+  ['subreddit', 'title', 'whentime', 'whendate', 'whenzone'].forEach(
+    element => {
+      var field = p_new.find(`[name=${element}]`);
+      field.text(payload[element]);
+    }
+  )
 
   return false;
 }
