@@ -137,13 +137,14 @@ function getListView($page, $page_size, $account) {
 }
 
 function getListViewPageCount($page_size, $account) : int {
-  $out = $account->
+  $post_count = $account->
     withCondition('( deleted IS NULL OR deleted = 0 )')->
-    countOwnPosts;
+    countOwn( 'post' );
   
-  if ($out <= $page_size) return 1;
+  $out = 1; 
 
-  $out = (int) ceil($out / $page_size);
+  if ($post_count > $page_size) $out = (int) ceil($post_count / $page_size);
+
   return $out;  
 }
 
@@ -189,7 +190,7 @@ $this->vars['page_size'] = $page_size;
 
 $account = $this->getAccount();
 $this->vars['account'] = $account;
- 
+
 switch ($_SESSION['view']['dashboard']) {
 case 'calendar':
   $this->vars['view'] = 'posts-calendar.html';
@@ -223,3 +224,4 @@ default:
   $this->vars['posts'] = $posts;
   break;
 }
+
