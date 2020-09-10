@@ -51,7 +51,7 @@ CREATE TABLE `post` (
   `when_posted` int(11) unsigned DEFAULT NULL,
   `bulk` tinyint(1) unsigned DEFAULT NULL,
   `deleted` tinyint(1) unsigned DEFAULT NULL,
-  `hash` `hash` CHAR(32) GENERATED ALWAYS AS (MD5(body)) STORED,
+  `hash` CHAR(32) GENERATED ALWAYS AS (MD5(body)) STORED,
   PRIMARY KEY (`id`),
   KEY `index_foreignkey_post_account` (`account_id`),
   KEY `when` (`when`),
