@@ -23,35 +23,32 @@
  * on Chrome
  * */
 
-/* Nothing for < md viewports, 
- * as these are handled by breakpoints
- * */
-
-/* From md viewports up, 
+/* For all viewports 
  * make the icon more like its real size
  * */
-@media (min-width: 768px) {
-  .inline-date::-webkit-calendar-picker-indicator {
-    bottom: 0;
-    cursor: pointer;
-    height: auto;
-    left: auto;
-    position: absolute;
-    right: 0;
-    top: 10%;
-    width: 1.2rem;
-    }
-}
+.inline-date::-webkit-calendar-picker-indicator {
+  bottom: 0;
+  cursor: pointer;
+  height: auto;
+  left: auto;
+  position: absolute;
+  right: 0;
+  top: 10%;
+  width: 1.2rem;
+  }
 
-/* At exactly the md viewport, space is tight
- * To display both the picker & the date, 
+/* space is tight at some viewports:
+ * (Described next to queries)
+ *
+ * * To display both the picker & the date, 
  *   remove the date's padding, 
  *     moving it left
  *   give the picker a negative right offset
  *    moving it right
  *   reduce the picker's size a bit
  * */
-@media (min-width: 768px) and (max-width: 991.98px) {
+@media (max-width: 424.98px), /* Smaller than "large phone */
+       (min-width: 768px) and (max-width: 991.98px) { /* Exactly bootstraps "md" */
   .inline-date {
     padding-left: 0;
     z-index: -2;
