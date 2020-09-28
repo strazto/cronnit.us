@@ -1,0 +1,12 @@
+{# Error icons - embed me in twig when needed 
+ use the following syntax to ensure the context is correct:
+
+ {% embed "error_icons.html" with {post: post} only %}
+#}
+{% if post.error %}
+<i class="fas fa-xs fa-exclamation-triangle text-danger"></i>
+{% elseif post.url is empty %}
+<i class="far fa-xs fa-clock text-muted"></i>
+{% else %}
+<i class="fa fa-xs fa-check text-muted"></i>
+{% endif %}

@@ -28,6 +28,9 @@
             <div name="whentime"  class="col-12 col-md-4 pl-2 card-text">{{ post.when | date("g:ia", timezone=post.whenzone) }}</div> 
             <div name="whenzone"  class="col-12 col-md-4 pl-2 card-text">{{ post.when | date("T", timezone=post.whenzone) }}</div>
           </div>
+          <div name="status" class="col-1 pl-1 px-md-auto text-center">
+            {% embed "error_icons.html" with {post: post} only %}{% endembed %}
+          </div>
         </div>
       {% endfor %}
 
