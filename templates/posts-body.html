@@ -19,11 +19,11 @@
       {# <!-- Existing posts --> #}
       {% for post in instances %}
         <div class="row no-gutters row-striped" id="post-{{ post.id }}">
-          <div class="col-5 row no-gutters">
+          <div class="col-7 col-md-5 row no-gutters">
             <div name="subreddit" class="col-12 col-md-5 pl-2 card-text">{{ post.subreddit }}</div>
             <div name="title"     class="col-12 col-md-7 pl-2 card-text"><a href="/edit?id={{ post.id }}">{{ post.title }}</a></div>
           </div>
-          <div name="whens" class="col-6 row no-gutters">
+          <div name="whens" class="col-4 col-md-6 row no-gutters align-content-start">
             <div name="whendate"  class="col-12 col-md-4 pl-2 card-text">{{ post.when | date("Y-m-d", timezone=post.whenzone) }}</div>
             <div name="whentime"  class="col-12 col-md-4 pl-2 card-text">{{ post.when | date("g:ia", timezone=post.whenzone) }}</div> 
             <div name="whenzone"  class="col-12 col-md-4 pl-2 card-text">{{ post.when | date("T", timezone=post.whenzone) }}</div>
@@ -43,7 +43,7 @@
         {% set add_when_zone = add_id ~ "-whenzone" %}
         {% set add_submit = add_id ~ "-submit" %}
         <div class="form-row" id="{{ add_id }}">
-          <div name="info" class="col-5 row no-gutters">
+          <div name="info" class="col-7 col-md-5 row no-gutters">
           <div class="col-12 col-md-5">
             <label class="sr-only" for="{{ add_subreddit }}" >Subreddit</label>
             <input class="form-control form-control-sm" name="subreddit" type="text" id="{{ add_subreddit }}" placeholder="Subreddit" >
@@ -53,7 +53,7 @@
             <input class="form-control form-control-sm mh-100" name="title" type="text" id="{{ add_title }}" placeholder="Title" rows=1>
           </div>
           </div>
-          <div name="whens" class="col-6 row no-gutters">
+          <div name="whens" class="col-4 col-md-6 row no-gutters">
             <div class="col-12 col-md-4" >
               <label class="sr-only" for="{{ add_when_date }}" >Date To Submit</label>
               <input class="form-control form-control-sm inline-date" name="whendate" type="date" id="{{ add_when_date }}">
