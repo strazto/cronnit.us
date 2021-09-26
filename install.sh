@@ -8,10 +8,10 @@
 #
 # It's safe to re-run this script
 
-hostname="my.hostname.com"
-client_id="XXXX"
-client_secret="XXXX"
-email="myemail@gmail.com"
+hostname="${CRONNIT_HOSTNAME:-my.hostname.com}"
+client_id="${CRONNIT_CLIENT_ID:-XXXX}"
+client_secret="${CRONNIT_CLIENT_SECRET:-XXXX}"
+email="${CRONNIT_EMAIL:-myemail@gmail.com}"
 
 # Make sure we are running as root
 if [ $(whoami) != root ]; then
