@@ -75,8 +75,8 @@ and your reddit app's redirect uri.
       - Name it whatever.
       - For the redirect URI, choose the __exact same address and port as 
         you specified in `config.php`__, suffixed by `/authorize`.
-        - In our case, that should be:
-          `http://localhost:8080/authorize`.
+        - If you're bringing up the dev server using `vagrant`, that should be:
+          `http://cronnit.local/authorize`.
       - The about URL and description don't really matter.
   - The `client_id` should appear below your application name/to the right of 
     the icon on the [apps page](https://www.reddit.com/prefs/apps).
@@ -94,7 +94,25 @@ VirtualBox 6.1.6 r137129
 [See this ticket](https://www.virtualbox.org/ticket/19642#comment:6)
 
 - Install [`vagrant`](https://www.vagrantup.com/downloads) and
-[`VirtualBox` 6.1.6](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1)*.
+[`VirtualBox` 6.1.6](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1)
+- Install the `vagrant-hostmanager` & `vagrant-env` plugins
+  ```bash
+  vagrant plugin install vagrant-hostmanager 
+  vagrant plugin install vagrant-env
+  ```
+- Configure a `.env` configuration file:
+  ```bash
+  vim .env
+  ```
+
+  ```env
+  CRONNIT_CLIENT_ID=<client_id>
+  CRONNIT_CLIENT_SECRET=<client_secret>
+  CRONNIT_EMAIL=<email to use for letsencrypt>
+  LOCAL_MIRROR_SUBDOMAIN=<optional subdomain for ubuntu package repositories>
+  ```
+  - `<client_id>` & `<client_secret>` are those obtained from
+    your [reddit app](https://www.reddit.com/prefs/apps).
 - From within this project (where the `vagrantfile` lives):
   - install the vm with:
     ```bash
@@ -105,29 +123,9 @@ VirtualBox 6.1.6 r137129
     vagrant ssh
     ```
     You should find yourself logged in as `cronnit@ubuntu-focal`.
-  - Edit config.php:
-    ```bash
-    vim config.php
-    ```
-    Replace:
-    - `'url' => 'http://my.hostname.com'` with `'url' => 'http://localhost:8080'`
-    - `'client_id => 'xxxx`, `'client_secret' => 'xxxx'` with those obtained from
-      your [reddit app](https://www.reddit.com/prefs/apps).
 
-##### Running Server on Vagrant VM
+You should be able to access the server by navigating to `cronnit.local` in your browser.
 
-- To make the site you serve accessible by the host (from a browser on your main computer):
-  ```bash
-  $ lout &
-  ```
-  (This is simply an alias for some `socat` redirection)
-- To run the website:
-  ```bash
-  serve
-  ```
-  (This just navigates to `public_html`, and calls `php -S localhost:8080`).
-- To view the website, from a browser on your host, navigate to `http://localhost:8080` !
-- To refresh changes, you'll need to interrupt  `serve` (`Ctrl`+`c` ) and call it again `serve`.
 
 ## Donate
 
