@@ -1,25 +1,83 @@
+# Local IP Address
+IP = '192.168.33.11'
+
+# Specs
+CPUS = 2
+MEMORY = 1024 * 6
+
+
+def fail_with_message(msg)
+  fail Vagrant::Errors::VagrantError.new, msg
+end
+
 Vagrant.configure("2") do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "ubuntu/focal64"
 
+
+  if Vagrant.has_plugin? 'vagrant-env'
+    config.env.enable # enable vagrant-env (.env)
+  else
+    fail_with_message "vagrant-env missing, please install the plugin with this command:\nvagrant plugin install vagrant-env"
+  end
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine.
   # By connecting to localhost:8080 from the host, we can access the guest's 
   # webserver.
+  config.vm.hostname = 'cronnit.local'
 
-  config.vm.network :forwarded_port, guest: 8080, host: 8080
+  config.vm.network :private_network, ip: IP, hostsupdater: 'skip'
+  # config.vm.network :forwarded_port, guest: 8080, host: 8080
   config.vm.network :forwarded_port, guest: 22, host: 5522
   
   # Forward x11 via ssh. 
   # Handy if you need to share a clipboard, convey viewport info, etc.
   config.ssh.forward_x11 = true
 
+  config.vm.provider 'virtualbox' do |vb|
+    vb.name = config.vm.hostname
+    vb.customize ['modifyvm', :id, '--cpus', CPUS]
+    vb.customize ['modifyvm', :id, '--memory', MEMORY]
+
+    # Fix for slow external network connections
+    vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+    vb.customize ['modifyvm', :id, '--natdnsproxy1', 'on']
+
+    # console file tty, is a must, wont boot without.
+    vb.customize ['modifyvm', :id, '--uartmode1', 'file', "%s-console.log" % vb.name]
+  end
+
+ # configure hostnames to access from localmachine
+  if Vagrant.has_plugin? 'vagrant-hostmanager'
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.aliases = [
+      'a.cronnit.local',
+    ]
+  else
+    fail_with_message "vagrant-hostmanager missing, please install the plugin with this command:\nvagrant plugin install vagrant-hostmanager"
+  end
+
+
+  # Try to select a local apt package mirror
+  config.vm.provision "shell",
+    path: "vagrant/change_mirror",
+    env: {
+      "LOCAL_MIRROR_SUBDOMAIN" => ENV['LOCAL_MIRROR_SUBDOMAIN']
+    }
+
   # Run the standard install script, without ssl auth
 
   config.vm.provision "shell",
     path: "install.sh",
-    env: {"HTTP_ONLY" => "1"}
+    env: {
+      "HTTP_ONLY" => "1",
+      "CRONNIT_HOSTNAME"      => config.vm.hostname,
+      "CRONNIT_CLIENT_ID"     => ENV['CRONNIT_CLIENT_ID'],
+      "CRONNIT_CLIENT_SECRET" => ENV['CRONNIT_CLIENT_SECRET'],
+      "CRONNIT_EMAIL"         => ENV['CRONNIT_EMAIL']
+    }
   
   # Install some development dependencies
   config.vm.provision "shell",
