@@ -13,4 +13,4 @@ sudo sed -i \
        /etc/apt/sources.list
 
 
-diff -y /etc/apt/sources.list /etc/apt/sources.list.bak
+diff -y /etc/apt/sources.list /etc/apt/sources.list.bak || true
