@@ -92,4 +92,12 @@ encodeRequestURI = function(obj) {
   return str;
 }
 
+getSubredditFlairs = function(subreddit) {
+  
+  const apiURL = new URL(`${subreddit}/api/link_flair_v2.json`, "https://reddit.com/r/");
 
+  fetch(apiURL)
+    .then(response => response.json())
+    .then(data => console.log(data));
+
+}
