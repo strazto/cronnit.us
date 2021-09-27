@@ -35,13 +35,24 @@ these blocks.
 {% endblock imgur %}
 
 {% block link %}
-<pre class="pre-scrollable" style="font-size: xx-small;">
+<pre class="mh-100" style="font-size: xx-small;">
   <a href="{{ thumb['body'] }}">{{ thumb['slug'] }}</a>
 </pre>
 {% endblock link %}
 
 {% block text %}
-<pre class="pre-scrollable" style="font-size: xx-small;">{{ thumb['slug'] }}</pre>
+{% set thumbnail_array = thumb['slug'] | split('\n', 2) %}
+{% set thumbnail_head  = attribute(thumbnail_array, 0) %}
+{% set thumbnail_body  = attribute(thumbnail_array, 1) %}
+<div class="text-thumbnail-wrapper">
+<button class="text-thumbnail-toggle btn btn-sm btn-outline-secondary btn-block py-0" data-toggle="collapse" role="button">
+  Expand
+</button>
+<pre class="text-thumbnail text-thumbnail-head">{{ thumbnail_head }}</pre>
+<pre class="text-thumbnail text-thumbnail-body collapse">
+  {{ thumbnail_body }}
+</pre>
+</div>
 {% endblock text %}
 
 {#

@@ -17,6 +17,29 @@
   background-color: #ffffff;
 }
 
+.text-thumbnail-wrapper {
+  max-width: 30vw;
+}
+
+.text-thumbnail {
+  font-size: small;
+}
+.text-thumbnail::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+  border: 1px solid #d5d5d5;
+}
+
+/* Handle */
+.text-thumbnail::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+.text-thumbnail::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 /* 
  * =================================================
  * Fix calendar icon truncating date input display 
