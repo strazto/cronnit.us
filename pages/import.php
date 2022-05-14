@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
     case "sendreplies":
     case "nsfw":
     case "delete":
-    case "flair_id":
+    case "flair_identifier":
     case "flair_text":
       break;
     default:
@@ -174,7 +174,7 @@ if (isset($_POST['submit'])) {
     $bean->url = null;
     $bean->error = null;
     $bean->bulk = true;
-    $bean->flair_id = $post->flair_id;
+    $bean->flair_identifier = $post->flair_identifier;
     $bean->flair_text = $post->flair_text;
     R::store($bean);
   }

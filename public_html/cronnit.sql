@@ -51,7 +51,7 @@ CREATE TABLE `post` (
   `when_posted` int(11) unsigned DEFAULT NULL,
   `bulk` tinyint(1) unsigned DEFAULT NULL,
   `deleted` tinyint(1) unsigned DEFAULT NULL,
-  `flair_id` text COLLATE utf8mb4_unicode_520_ci,
+  `flair_identifier` text COLLATE utf8mb4_unicode_520_ci,
   `flair_text` text COLLATE utf8mb4_unicode_520_ci,
   PRIMARY KEY (`id`),
   KEY `index_foreignkey_post_account` (`account_id`),
