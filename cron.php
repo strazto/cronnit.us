@@ -59,7 +59,7 @@ foreach ($pending as $post) {
     'sendreplies' => intval($post->sendreplies),
     'nsfw' => intval($post->nsfw),
     'resubmit' => true,
-    'flair_id' => $post->flair_id,
+    'flair_identifier' => $post->flair_identifier,
     'flair_text' => $post->flair_text
   ];
 

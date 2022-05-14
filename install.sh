@@ -197,11 +197,12 @@ su cronnit <<EOF
 
     if [ ! -d .git ]; then
         git init
-        git remote add origin https://github.com/krisives/cronnit.us
+        git remote add origin https://github.com/dyce79/cronnit.git
+
     fi
 
-    git pull origin master
-    git branch --set-upstream-to=origin/master master
+    git pull origin main
+    git branch --set-upstream-to=origin/master main
     composer update
 
     if ! crontab -l | grep cron.sh; then
